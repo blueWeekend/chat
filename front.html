@@ -21,13 +21,13 @@
     .back{display: block;float: left;font-size: 1rem;line-height: 2rem}
 
     .stage{position: absolute;width: 60%;height: 5.6rem;left: 20%;top:5%;background: #0e90d2;text-align: center}
-    .stage div{width: 30%;height: 1.5rem;line-height: 1.5rem;text-align: center;margin: 0.3rem auto;border:1px white solid;cursor: pointer}
+    .stage div{width: 30%;height: 1.5rem;line-height: 1.5rem;text-align: center;margin: 0.8rem auto;border:1px white solid;cursor: pointer}
 </style>
 <body>
 <div class="stage">
     <h5>取个昵称先</h5>
-    <input class="nickname">
-    <div>确认</div>
+    <input class="nickname" type="text">
+    <div class="confirm_name">确认</div>
 </div>
 <div class="copy">
     <div class="head">
@@ -53,6 +53,19 @@ s
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript">
     $(function(){
+        $('.confirm_name').click(function () {
+            var nickname=$('.nickname').val();
+            nickname=nickname.replace(/^\s+|\s+$/gm,'');
+            if(!nickname){
+                alert('请输入昵称');
+                return false;
+            }
+            if(!isNaN(nickname)){
+                alert('昵称不能为纯数字');
+                return false;
+            }
+            
+        })
         $('ul').on('click','li',function(obj){
             var idName=$(this).attr('class');
             var isExist=$('#'+idName).length;
