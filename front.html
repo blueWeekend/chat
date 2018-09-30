@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+</head>
+<style>
+    html,body{height:100%}
+    *{margin:0;padding: 0;list-style: none;}
+    textarea{border: 0;display: block}
+    ul{z-index: 0}
+    ul li{background: purple;width: 100%;height: 3rem;line-height: 3rem}
+    .parent{width: 100%;height: 100%;background: yellow;position: absolute;left: 0;top:0;}
+    textarea{resize:none;}
+    /*outline: none;*/
+    .copy{width: 100%;height: 100%;position: absolute;display: none}
+    .head{width: 100%;height: 2rem;font-size: 1.5rem;text-align: center}
+    .content{width: 100%;height: 65%;background: #1D222D}
+    .answer{width: 100%;height: 25%;background: #0e90d2;font-size: 2rem}
+    .send{width: 15%;height: 2rem;background: #0e90d2;float: right;font-size: 1rem;text-align: center;line-height: 2rem}
+    .back{display: block;float: left;font-size: 1rem;line-height: 2rem}
+</style>
+<body>
+<div class="copy">
+    <div class="head"><span class="back" onclick="back(this)">&lt;返回</span><div class="to_user">blue</div></div>
+    <textarea class="content"></textarea>
+    <textarea class="answer"></textarea>
+    <div class="send" onclick="send(this)">发送</div>
+</div>
+<ul>
+<li class="f1">
+sdf
+</li>
+<li class="f2">
+sd
+</li>
+<li class="f3">
+s
+</li>
+</ul>
+</body>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $('ul').on('click','li',function(obj){
+            var idName=$(this).attr('class');
+            var isExist=$('#'+idName).length;
+            var to_uesr=$(this).text();
+            $('ul').hide();
+            if(isExist){
+                $('#'+idName).show();
+            }else{
+                var div=$('.copy').eq(0).clone();
+                div.attr('id',idName);
+                div.find('.to_user').text(to_uesr);
+                $('body').append(div);
+                div.show();
+            }
+        })
+    })
+    function send(obj) {
+        var to_user=$(obj).parent().find('.to_user').text();
+        var msg=$(obj).siblings('.answer').val();
+        var obj={'user':touser,'text':text,'status':0};
+        websocket.send(JSON.stringify(obj));
+    }
+    function link(user) {
+        var msg = document.getElementById("msg");
+        var online=$('#online');
+        var wsServer = 'ws://liule.online:9502';
+        websocket = new WebSocket(wsServer);
+        websocket.onopen = function (evt) {
+            var obj={'user':user,'status':1};
+            websocket.send(JSON.stringify(obj));
+        };
+        websocket.onmessage = function (evt) {
+            var data=JSON.parse(evt.data);
+            console.log(data);
+            if(data.status==200){
+                msg.innerHTML += data.msg +'<br>';
+            }else if(data.status==100){
+                var newHtml=online.html().replace(data.msg,'');
+                online.html(newHtml);
+            }else{
+                online.html(online.html()+data.msg);
+            }
+        };
+        $('.login').css('display','none');
+    }
+    function back(obj) {
+        $(obj).parents('.copy').hide();
+        $('ul').show();
+    }
+    function song(){
+        var touser=$('#to').val();
+        var text = document.getElementById('text').value;
+        document.getElementById('text').value = '';
+        //向服务器发送数据
+        var obj={'user':touser,'text':text,'status':0};
+        websocket.send(JSON.stringify(obj));
+    }
+    function login() {
+        var text=$('.user').val();
+        link(text);
+    }
+</script>
+</html>
