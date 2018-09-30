@@ -64,7 +64,8 @@ s
                 alert('昵称不能为纯数字');
                 return false;
             }
-            
+            $('.stage').hide();
+            link(nickname);
         })
         $('ul').on('click','li',function(obj){
             var idName=$(this).attr('class');
@@ -90,12 +91,11 @@ s
         websocket.send(JSON.stringify(obj));
     }
     function link(user) {
-        var msg = document.getElementById("msg");
-        var online=$('#online');
-        var wsServer = 'ws://liule.online:9502';
+        var online=$('ul');
+        var wsServer = 'ws://liule.online:9501';
         websocket = new WebSocket(wsServer);
         websocket.onopen = function (evt) {
-            var obj={'user':user,'status':1};
+            var obj={'user':user,'status':100};
             websocket.send(JSON.stringify(obj));
         };
         websocket.onmessage = function (evt) {
@@ -107,7 +107,8 @@ s
                 var newHtml=online.html().replace(data.msg,'');
                 online.html(newHtml);
             }else{
-                online.html(online.html()+data.msg);
+                var li=$('<li class="'+data.msg+'"></li>');
+                online.append(li);
             }
         };
         $('.login').css('display','none');
