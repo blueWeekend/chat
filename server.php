@@ -15,7 +15,6 @@ class MyServer{
         $this->ws->on("open", [$this, 'onOpen']);
         $this->ws->on("message", [$this, 'onMessage']);
         $this->ws->on("close", [$this, 'onClose']);
-
         $this->ws->start();
     }
     public function onOpen($ws, $request){
@@ -29,7 +28,7 @@ class MyServer{
         $data=json_decode($frame->data);
         if($data->status==200){
             //用户发消息
-            $msg = $this->redis->hget('hash',$frame->fd).":{$data->text}\n";
+            $msg = $this->redis->hget('online',$frame->fd).":{$data->text}";
             $receive_user=$data->user;
             $obj=['data'=>$msg,'status'=>200,'msg'=>'发送消息'];
             $ws->push($receive_user,json_encode($obj));
@@ -44,7 +43,13 @@ class MyServer{
         }
     }
     public function onClose($ws, $fd){
-
+        $user=$this->redis->hget('online',$fd);
+        $this->redis->hdel('online',$fd);
+        $arr= $this->redis->hgetall('online');
+        foreach ($arr as $fd=>$val){
+            $obj=['data'=>$user,'status'=>400];
+            $ws->push($fd,json_encode($obj));
+        }
     }
 }
 $ws=new MyServer();

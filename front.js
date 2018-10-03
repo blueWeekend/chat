@@ -31,7 +31,7 @@ $(function(){
 })
 function send(obj) {
     var idName=$(obj).parent().attr('id');
-    var to_fd=$('.'+idName).data('to_fd');
+    var to_fd=$('.'+idName).data('fd');
     var msg=$(obj).siblings('.answer').val();
     var obj={'user':to_fd,'text':msg,'status':200};
     $(obj).prev().val('');
@@ -47,14 +47,15 @@ function link(user) {
     };
     websocket.onmessage = function (evt) {
         var data=JSON.parse(evt.data);
+        console.log(data);
         if(data.status==200){
             //监听用户消息
             var data=data.data;
         }else if(data.status==300){
             //获取在线用户
             var online=data.data;
-            var temp_li=$('ul li').eq(0);
             for(var i in online){
+                var temp_li=$('ul li').eq(0).clone();
                 temp_li.data('fd',i);
                 temp_li.attr('class',online[i]);
                 temp_li.children('.recipient').text(online[i]);
@@ -63,6 +64,7 @@ function link(user) {
             }
         }else if(data.status==400){
             //监听用户下线
+            $('.'+data.data).remove();
         }
     };
     $('.login').css('display','none');
