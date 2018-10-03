@@ -26,7 +26,7 @@
     .stage div{width: 30%;height: 1.5rem;line-height: 1.5rem;text-align: center;margin: 0.8rem auto;border:1px white solid;cursor: pointer}
 </style>
 <body>
-<div class="stage">
+<div class="stage" style="display: none">
     <h5>取个昵称先</h5>
     <input class="nickname" type="text">
     <div class="confirm_name">确认</div>
@@ -36,7 +36,7 @@
         <span class="back" onclick="back(this)">&lt;返回</span>
         <div class="to_user">blue</div>
     </div>
-    <textarea class="content"></textarea>
+    <div class="content"></div>
     <textarea class="answer"></textarea>
     <div class="send" onclick="send(this)">发送</div>
 </div>

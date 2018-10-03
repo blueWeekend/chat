@@ -19,37 +19,28 @@ class MyServer{
         $this->ws->start();
     }
     public function onOpen($ws, $request){
-        $obj=['msg'=>'hello welcome','status'=>200];
-        $ws->push($request->fd, json_encode($obj));
-//        $str='';
-//        foreach ($arr as $fd=>$user){
-//            $str.=$user."<br>";
-//        }
-//        $obj=['msg'=>$str,'status'=>300];
-//        if($str){
-//            $ws->push($request->fd, json_encode($obj));
-//        }
+        $online_user= $this->redis->hgetall('online');
+        $obj=['data'=>$online_user,'status'=>300,'msg'=>'获取当前在线用户'];
+        if($online_user){
+            $ws->push($request->fd, json_encode($obj));
+        }
     }
     public function onMessage($ws, $frame){
-        global $redis;
         $data=json_decode($frame->data);
-        if($data->status==1){
-            $redis->set($data->user, $frame->fd);
-            $redis->hset('hash',$frame->fd,$data->user);
-            $arr= $redis->hgetall('hash');
-            foreach ($arr as $fd=>$user){
-                if($fd!=$frame->fd){
-                    $obj=['msg'=>$data->user,'status'=>300];
-                    $ws->push($fd,json_encode($obj));
-                }
-            }
+        if($data->status==200){
+            //用户发消息
+            $msg = $this->redis->hget('hash',$frame->fd).":{$data->text}\n";
+            $receive_user=$data->user;
+            $obj=['data'=>$msg,'status'=>200,'msg'=>'发送消息'];
+            $ws->push($receive_user,json_encode($obj));
         }else{
-            $msg = $redis->hget('hash',$frame->fd).":{$data->text}\n";
-            $to=$data->user;
-            $to=$redis->get($to);
-            $obj=['msg'=>$msg,'status'=>200];
-            $redis->hset($redis->hget('hash',$frame->fd).'->'.$data->user,time(),$msg);
-            $ws->push($to,json_encode($obj));
+            //新用户上线
+            $online_user= $this->redis->hgetall('online');
+            foreach ($online_user as $fd=>$user){
+                $obj=['data'=>[$frame->fd=>$data->user],'status'=>300,'msg'=>'新用户上线'];
+                $ws->push($fd,json_encode($obj));
+            }
+            $this->redis->hset('online',$frame->fd,$data->user);
         }
     }
     public function onClose($ws, $fd){
