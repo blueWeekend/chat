@@ -7,18 +7,19 @@
 </head>
 <style>
     html,body{height:100%}
+    h3{display: none}
     *{margin:0;padding: 0;list-style: none;}
     textarea{border: 0;display: block;resize:none;}
-    ul{z-index: 0}
+    ul{z-index: 0;display: none}
     ul li{background: purple;width: 100%;height: 4rem;line-height: 3rem;border-bottom: 1px solid white}
     .recipient{display: block;height: 2rem;line-height: 2rem;padding-left: 1rem}
     .last-msg{display: block;font-size: 0.8rem;height: 2rem;line-height: 2rem;padding-left: 1rem}
     /*outline: none;*/
     /*聊天框*/
-    .copy{width: 100%;height: 100%;position: absolute;display: none}
+    .copy{width: 100%;height: 100%;position: absolute;display: none;}
     .head{width: 100%;height: 2rem;font-size: 1.5rem;text-align: center}
-    .content{width: 100%;height: 65%;background: #1D222D;color: white}
-    .msg{width: 100%; word-break:break-all;}
+    .content{width: 100%;height: 65%;background: #2B2B2B;color: white;overflow: auto}
+    .msg{width: 100%; word-break:break-all;margin-bottom: 1rem}
     .answer{width: 100%;height: 25%;background: #0e90d2;font-size: 2rem}
     .send{width: 15%;height: 2rem;background: #0e90d2;float: right;font-size: 1rem;text-align: center;line-height: 2rem}
     .back{display: block;float: left;font-size: 1rem;line-height: 2rem}
@@ -27,6 +28,7 @@
     .stage div{width: 30%;height: 1.5rem;line-height: 1.5rem;text-align: center;margin: 0.8rem auto;border:1px white solid;cursor: pointer}
 </style>
 <body>
+<h3>当前在线人数:<span class="online-num">1</span></h3>
 <div class="stage">
     <h5>设个昵称先</h5>
     <input class="nickname" type="text">
@@ -38,8 +40,7 @@
         <div class="to_user">blue</div>
     </div>
     <div class="content">
-        <div class="msg">liule&nbsp;2018/10/3&nbsp;10:50:34<br>sdfsdf</div>
-        <div class="msg" style="text-align: right">blue:<br>hei</div>
+
     </div>
     <textarea class="answer"></textarea>
     <div class="send" onclick="send(this)">发送</div>

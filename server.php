@@ -29,7 +29,7 @@ class MyServer{
         if($data->status==200){
             //用户发消息
             $user=$this->redis->hget('online',$frame->fd);
-            $msg =$user.' '.date('Y-m-d H:i:s').":<br>{$data->text}";
+            $msg =$user.' '.date('Y-m-d H:i:s')."<br>{$data->text}";
             $receive_user=$data->user;
             $obj=['data'=>$msg,'status'=>200,'user'=>$user,'msg'=>'发送消息'];
             $ws->push($receive_user,json_encode($obj));
