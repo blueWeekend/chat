@@ -6,6 +6,10 @@ $(function(){
             alert('请输入昵称');
             return false;
         }
+        if(nickname.length>15){
+            alert('昵称不能超过15个字符');
+            return false;
+        }
         if(!isNaN(nickname)){
             alert('昵称不能为纯数字');
             return false;
@@ -38,7 +42,6 @@ function send(obj) {
     websocket.send(JSON.stringify(obj));
 }
 function link(user) {
-    var online=$('ul');
     var wsServer = 'ws://liule.online:9501';
     websocket = new WebSocket(wsServer);
     websocket.onopen = function (evt) {
@@ -50,7 +53,10 @@ function link(user) {
         console.log(data);
         if(data.status==200){
             //监听用户消息
-            var data=data.data;
+            var msg=data.data;
+            var div=$('<div>'+msg+'</div>');
+            var user=data.user;
+            $('#'+user).append(div);
         }else if(data.status==300){
             //获取在线用户
             var online=data.data;
@@ -64,7 +70,7 @@ function link(user) {
             }
         }else if(data.status==400){
             //监听用户下线
-            $('.'+data.data).remove();
+            $('.'+data.data+',#'+data.data).remove();
         }
     };
     $('.login').css('display','none');
@@ -72,12 +78,4 @@ function link(user) {
 function back(obj) {
     $(obj).parents('.copy').hide();
     $('ul').show();
-}
-function send_msg(){
-    var obj={'user':touser,'text':text,'status':200};
-    websocket.send(JSON.stringify(obj));
-}
-function login() {
-    var text=$('.user').val();
-    link(text);
 }

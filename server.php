@@ -28,9 +28,10 @@ class MyServer{
         $data=json_decode($frame->data);
         if($data->status==200){
             //用户发消息
-            $msg = $this->redis->hget('online',$frame->fd).":{$data->text}";
+            $user=$this->redis->hget('online',$frame->fd);
+            $msg =$user.' '.date('Y-m-d H:i:s').":<br>{$data->text}";
             $receive_user=$data->user;
-            $obj=['data'=>$msg,'status'=>200,'msg'=>'发送消息'];
+            $obj=['data'=>$msg,'status'=>200,'user'=>$user,'msg'=>'发送消息'];
             $ws->push($receive_user,json_encode($obj));
         }else{
             //新用户上线
@@ -47,7 +48,7 @@ class MyServer{
         $this->redis->hdel('online',$fd);
         $arr= $this->redis->hgetall('online');
         foreach ($arr as $fd=>$val){
-            $obj=['data'=>$user,'status'=>400];
+            $obj=['data'=>$user,'status'=>400,'msg'=>'用户下线'];
             $ws->push($fd,json_encode($obj));
         }
     }

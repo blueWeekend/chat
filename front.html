@@ -17,7 +17,8 @@
     /*聊天框*/
     .copy{width: 100%;height: 100%;position: absolute;display: none}
     .head{width: 100%;height: 2rem;font-size: 1.5rem;text-align: center}
-    .content{width: 100%;height: 65%;background: #1D222D}
+    .content{width: 100%;height: 65%;background: #1D222D;color: white}
+    .msg{width: 100%; word-break:break-all;}
     .answer{width: 100%;height: 25%;background: #0e90d2;font-size: 2rem}
     .send{width: 15%;height: 2rem;background: #0e90d2;float: right;font-size: 1rem;text-align: center;line-height: 2rem}
     .back{display: block;float: left;font-size: 1rem;line-height: 2rem}
@@ -27,7 +28,7 @@
 </style>
 <body>
 <div class="stage">
-    <h5>取个昵称先</h5>
+    <h5>设个昵称先</h5>
     <input class="nickname" type="text">
     <div class="confirm_name">确认</div>
 </div>
@@ -36,7 +37,10 @@
         <span class="back" onclick="back(this)">&lt;返回</span>
         <div class="to_user">blue</div>
     </div>
-    <div class="content"></div>
+    <div class="content">
+        <div class="msg">liule&nbsp;2018/10/3&nbsp;10:50:34<br>sdfsdf</div>
+        <div class="msg" style="text-align: right">blue:<br>hei</div>
+    </div>
     <textarea class="answer"></textarea>
     <div class="send" onclick="send(this)">发送</div>
 </div>
