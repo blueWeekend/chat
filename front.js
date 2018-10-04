@@ -87,6 +87,7 @@ function link(user) {
                 temp_li.data('fd',i);
                 temp_li.attr('class',online[i]);
                 temp_li.children('.recipient').text(online[i]);
+                temp_li.children('.last-msg').text('');
                 $('ul').append(temp_li);
                 //添加聊天对话框
                 var div=$('.copy').eq(0).clone();
