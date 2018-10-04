@@ -25,7 +25,10 @@ $(function(){
     $('ul').on('click','li',function(obj){
         var idName=$(this).attr('class');
         $('ul,h3').hide();
-        $('#'+idName).show();
+        $('#'+idName).show().children('.answer').focus();
+        var chat_div=$('#'+idName).children('.content');
+        var chat_div_height=chat_div.get(0).scrollHeight;
+        chat_div.scrollTop(chat_div_height);
     })
 })
 //发送消息
@@ -69,8 +72,11 @@ function link(user) {
             var last_msg=msg.split('<br>')[1];
             $('.'+user).find('.last-msg').text(last_msg);
             var chat_div=$('#'+user).children('.content');
-            var chat_div_height=chat_div.get(0).scrollHeight;
-            chat_div.append(div).scrollTop(chat_div_height);
+            chat_div.append(div);
+            if(!$('#'+user).is(':hidden')){
+                var chat_div_height=chat_div.get(0).scrollHeight;
+                chat_div.scrollTop(chat_div_height);
+            }
         }else if(data.status==300){
             //获取在线用户
             var online=data.data;

@@ -70,6 +70,7 @@ class MyServer{
         $this->redis->srem('user',$user);
     }
     public function robot_answer($msg,$user){
+        $user=urlencode($user);
         $arr=['inputText'=>['text'=>$msg]];
         $user_arr=['apiKey'=>'ce9a2413ada445caad83487d756d77f2','userId'=>$user];
         $param=[
