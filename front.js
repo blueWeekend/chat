@@ -14,6 +14,7 @@ $(function(){
             alert('昵称不能为纯数字');
             return false;
         }
+        console.log(is_use(nickname));
         if(is_use(nickname)){
             alert('改昵称已被占用');
             return false;
@@ -120,6 +121,7 @@ function is_use(name) {
         success:function (data) {
             console.log('is_use:'+data);
             if(data==1){
+                console.log('data:');
                 return true;
             }
             return false;
