@@ -118,6 +118,7 @@ function is_use(name) {
         type:'post',
         data:{'name':name},
         success:function (data) {
+            console.log('is_use:'+data);
             if(data==1){
                 return true;
             }
