@@ -127,4 +127,5 @@ function is_use(name) {
             return false;
         }
     })
+    return true;
 }
