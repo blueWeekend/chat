@@ -32,6 +32,10 @@ class MyServer{
             $user=$this->redis->hget('online',$frame->fd);
             //机器人
             if($receive_user==-1){
+                //聊天记录
+                $receive_name='robot';
+                $list_name=$user>$receive_name?$user.'-'.$receive_name:$receive_name.'-'.$user;
+                $this->redis->lpush($list_name, $data->text);
                 $robot_msg=$this->robot_answer($data->text,'robot'.$frame->fd);
                 foreach ($robot_msg as $key=>$val){
                     $temp_msg=$val['values'][$val['resultType']];
@@ -39,10 +43,13 @@ class MyServer{
                         $temp_msg='<a target="_blank" href="'.$temp_msg.'">'.$temp_msg.'</a>';
                     }
                     $msg='智能机器人 '.date('Y-m-d H:i:s')."<br>{$temp_msg}";
+                    //聊天记录
+                    $this->redis->lpush($list_name,$msg);
                     $obj=['data'=>$msg,'status'=>200,'user'=>'robot','msg'=>'机器人回复'];
                     $ws->push($frame->fd,json_encode($obj));
                 }
             }else{
+                //聊天记录
                 $receive_name=$this->redis->hget('online',$receive_user);
                 $list_name=$user>$receive_name?$user.'-'.$receive_name:$receive_name.'-'.$user;
                 //用户发消息
