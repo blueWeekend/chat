@@ -14,6 +14,10 @@ $(function(){
             alert('昵称不能为纯数字');
             return false;
         }
+        if(is_use(nickname)){
+            alert('改昵称已被占用');
+            return false;
+        }
         $('.stage').hide();
         $('ul,h3').show();
         link(nickname);
@@ -59,6 +63,9 @@ function link(user) {
             var msg=data.data;
             var div=$('<div class="msg">'+msg+'</div>');
             var user=data.user;
+            //显示最近的一条消息
+            var last_msg=msg.split('<br>')[1];
+            $('.'+user).find('.last-msg').text(last_msg);
             var chat_div=$('#'+user).children('.content');
             var chat_div_height=chat_div.get(0).scrollHeight;
             chat_div.append(div).scrollTop(chat_div_height);
@@ -72,7 +79,6 @@ function link(user) {
                 temp_li.data('fd',i);
                 temp_li.attr('class',online[i]);
                 temp_li.children('.recipient').text(online[i]);
-                temp_li.children('.last-msg').text('test');
                 $('ul').append(temp_li);
                 //添加聊天对话框
                 var div=$('.copy').eq(0).clone();
@@ -85,7 +91,7 @@ function link(user) {
             //监听用户下线
             $('.'+data.data+',#'+data.data).remove();
             $('.online-num').text(parseInt($('.online-num').text())-1);
-            $('ul').show();
+            $('ul,h3').show();
         }
     };
 }
@@ -95,5 +101,27 @@ function back(obj) {
 }
 function get_time() {
     var date=new Date();
-    return date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
+    var month=format_time(date.getMonth()+1);
+    var day=format_time(date.getDate());
+    var hours=format_time(date.getHours());
+    var minutes=format_time(date.getMinutes());
+    var seconds=format_time(date.getSeconds());
+    return  date.getFullYear()+'-'+month+'-'+day+' '+hours+':'+minutes+':'+seconds;
+}
+function format_time(str) {
+    return str<10?'0'+str:str;
+}
+//昵称是否已被占用
+function is_use(name) {
+    $.ajax({
+        url:'is_online.php',
+        type:'post',
+        data:{'name':name},
+        success:function (data) {
+            if(data==1){
+                return true;
+            }
+            return false;
+        }
+    })
 }

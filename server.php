@@ -41,6 +41,7 @@ class MyServer{
                 $ws->push($fd,json_encode($obj));
             }
             $this->redis->hset('online',$frame->fd,$data->user);
+            $this->redis->sadd('user',$data->user);
         }
     }
     public function onClose($ws, $fd){
@@ -51,6 +52,7 @@ class MyServer{
             $obj=['data'=>$user,'status'=>400,'msg'=>'用户下线'];
             $ws->push($fd,json_encode($obj));
         }
+        $this->redis->srem('user',$user);
     }
 }
 $ws=new MyServer();
