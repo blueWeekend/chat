@@ -90,6 +90,8 @@ function link(user) {
                 $('ul').append(temp_li);
                 //添加聊天对话框
                 var div=$('.copy').eq(0).clone();
+                div.find('.content').empty();
+                div.find('.answer').val('');
                 div.attr('id',online[i]);
                 div.css('display','none');
                 div.find('.to_user').text(online[i]);
