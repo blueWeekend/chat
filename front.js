@@ -48,7 +48,7 @@ function send(obj) {
     //有新消息滚动到最下方
     var chat_div_height=chat_div.get(0).scrollHeight;
     chat_div.append(div).scrollTop(chat_div_height);
-    $(obj).prev().val('');
+    $(obj).prev().val('').focus();
     var obj={'user':to_fd,'text':msg,'status':200};
     websocket.send(JSON.stringify(obj));
 }

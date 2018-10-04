@@ -32,7 +32,7 @@ class MyServer{
             $user=$this->redis->hget('online',$frame->fd);
             //机器人
             if($receive_user==-1){
-                $robot_msg=$this->robot_answer($data->text,$user);
+                $robot_msg=$this->robot_answer($data->text,'robot'.$frame->fd);
                 foreach ($robot_msg as $key=>$val){
                     $temp_msg=$val['values'][$val['resultType']];
                     if($val['resultType']=='url'){
@@ -70,7 +70,6 @@ class MyServer{
         $this->redis->srem('user',$user);
     }
     public function robot_answer($msg,$user){
-        $user=urlencode($user);
         $arr=['inputText'=>['text'=>$msg]];
         $user_arr=['apiKey'=>'ce9a2413ada445caad83487d756d77f2','userId'=>$user];
         $param=[
