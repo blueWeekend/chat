@@ -34,7 +34,12 @@ class MyServer{
             if($receive_user==-1){
                 $robot_msg=$this->robot_answer($data->text,$user);
                 foreach ($robot_msg as $key=>$val){
-                    $obj=['data'=>$val['values'][$val['resultType']],'status'=>200,'user'=>'robot','msg'=>'机器人回复'];
+                    $temp_msg=$val['values'][$val['resultType']];
+                    if($val['resultType']=='url'){
+                        $temp_msg='<a target="_blank" href="'.$temp_msg.'">'.$temp_msg.'</a>';
+                    }
+                    $msg='智能机器人 '.date('Y-m-d H:i:s')."<br>{$temp_msg}";
+                    $obj=['data'=>$msg,'status'=>200,'user'=>'robot','msg'=>'机器人回复'];
                     $ws->push($frame->fd,json_encode($obj));
                 }
             }else{
