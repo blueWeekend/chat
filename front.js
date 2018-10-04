@@ -14,10 +14,10 @@ $(function(){
             alert('昵称不能为纯数字');
             return false;
         }
-        // if(is_use(nickname)){
-        //     alert('改昵称已被占用');
-        //     return false;
-        // }
+        if(is_use(nickname)){
+            alert('改昵称已被占用');
+            return false;
+        }
         $('.stage').hide();
         $('ul,h3').show();
         link(nickname);
