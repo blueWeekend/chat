@@ -98,9 +98,12 @@ function link(user) {
             $('.online-num').text(parseInt($('.online-num').text())+online_add);
         }else if(data.status==400){
             //监听用户下线
+            if(!$('#'+data.data).is(':hidden')){
+                //正在与下线用户聊天则显示在线用户列表
+                $('ul,h3').show();
+            }
             $('.'+data.data+',#'+data.data).remove();
             $('.online-num').text(parseInt($('.online-num').text())-1);
-            $('ul,h3').show();
         }
     };
 }
