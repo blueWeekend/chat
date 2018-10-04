@@ -43,8 +43,11 @@ class MyServer{
                     $ws->push($frame->fd,json_encode($obj));
                 }
             }else{
+                $receive_name=$this->redis->hget('online',$receive_user);
+                $list_name=$user>$receive_name?$user.'-'.$receive_name:$receive_name.'-'.$user;
                 //用户发消息
                 $msg =$user.' '.date('Y-m-d H:i:s')."<br>{$data->text}";
+                $this->redis->lpush($list_name, $msg);
                 $obj=['data'=>$msg,'status'=>200,'user'=>$user,'msg'=>'发送消息'];
                 $ws->push($receive_user,json_encode($obj));
             }
