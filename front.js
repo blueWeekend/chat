@@ -14,10 +14,10 @@ $(function(){
             alert('昵称不能为纯数字');
             return false;
         }
-        if(is_use(nickname)){
-            alert('改昵称已被占用');
-            return false;
-        }
+        // if(is_use(nickname)){
+        //     alert('改昵称已被占用');
+        //     return false;
+        // }
         $('.stage').hide();
         $('ul,h3').show();
         link(nickname);
@@ -40,6 +40,8 @@ function send(obj) {
     var send_msg=nickname+' '+cur_time+'<br>'+msg;
     var div=$('<div class="msg">'+send_msg+'</div>');
     div.css('text-align','right');
+    //显示最近的一条消息
+    $('.'+idName).find('.last-msg').text(msg);
     //有新消息滚动到最下方
     var chat_div_height=chat_div.get(0).scrollHeight;
     chat_div.append(div).scrollTop(chat_div_height);

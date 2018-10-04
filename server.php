@@ -6,6 +6,7 @@ class MyServer{
         $this->ws = new swoole_websocket_server("0.0.0.0", 9501);
         $this->redis=new \Redis();
         $this->redis->connect('127.0.0.1', 6379);
+        $this->redis->sadd('user','robot');
         $this->ws->set(array(
             'worker_num' => 4,
             'daemonize' => true,
@@ -27,12 +28,21 @@ class MyServer{
     public function onMessage($ws, $frame){
         $data=json_decode($frame->data);
         if($data->status==200){
-            //用户发消息
-            $user=$this->redis->hget('online',$frame->fd);
-            $msg =$user.' '.date('Y-m-d H:i:s')."<br>{$data->text}";
             $receive_user=$data->user;
-            $obj=['data'=>$msg,'status'=>200,'user'=>$user,'msg'=>'发送消息'];
-            $ws->push($receive_user,json_encode($obj));
+            $user=$this->redis->hget('online',$frame->fd);
+            //机器人
+            if($receive_user==-1){
+                $robot_msg=$this->robot_answer($data->text,$user);
+                foreach ($robot_msg as $key=>$val){
+                    $obj=['data'=>$val['values'][$val['resultType']],'status'=>200,'user'=>'robot','msg'=>'机器人回复'];
+                    $ws->push($frame->fd,json_encode($obj));
+                }
+            }else{
+                //用户发消息
+                $msg =$user.' '.date('Y-m-d H:i:s')."<br>{$data->text}";
+                $obj=['data'=>$msg,'status'=>200,'user'=>$user,'msg'=>'发送消息'];
+                $ws->push($receive_user,json_encode($obj));
+            }
         }else{
             //新用户上线
             $online_user= $this->redis->hgetall('online');
@@ -53,6 +63,45 @@ class MyServer{
             $ws->push($fd,json_encode($obj));
         }
         $this->redis->srem('user',$user);
+    }
+    public function robot_answer($msg,$user){
+        $arr=['inputText'=>['text'=>$msg]];
+        $user_arr=['apiKey'=>'ce9a2413ada445caad83487d756d77f2','userId'=>$user];
+        $param=[
+            "perception"=>$arr,
+            "userInfo"=>$user_arr,
+        ];
+        $param=json_encode($param);
+        $url='http://openapi.tuling123.com/openapi/api/v2';
+        $res=$this->curlPost($url,$param);
+        $res=json_decode($res,true);
+        return $res['results'];
+    }
+    public function curlPost($url, $post_data = [], $type = 0)
+    {
+        //初始化
+        $ch = curl_init();
+        //设置抓取的url
+        curl_setopt($ch, CURLOPT_URL, $url);
+        //设置头文件的信息作为数据流输出
+        //curl_setopt($ch, CURLOPT_HEADER, 1);
+        //设置获取的信息以文件流的形式返回，而不是直接输出。
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        //设置post方式提交
+        curl_setopt($ch, CURLOPT_POST, 1);
+        //设置post数据
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        //执行命令
+        $result = curl_exec($ch);
+        //关闭URL请求
+        curl_close($ch);
+        //显示获得的数据
+        if ($type) {
+            $result = iconv("gbk//IGNORE", "utf-8", $result);
+        }
+        return $result;
     }
 }
 $ws=new MyServer();
