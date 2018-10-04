@@ -14,7 +14,6 @@ $(function(){
             alert('昵称不能为纯数字');
             return false;
         }
-        console.log(is_use(nickname));
         if(is_use(nickname)){
             alert('改昵称已被占用');
             return false;
@@ -114,18 +113,19 @@ function format_time(str) {
 }
 //昵称是否已被占用
 function is_use(name) {
+    var flag;
     $.ajax({
         url:'is_online.php',
         type:'post',
         data:{'name':name},
-        success:function (data) {
-            console.log('is_use:'+data);
+        async:false,
+        success:function (data){
             if(data==1){
-                console.log('data:');
-                return true;
+                flag=true;
+            }else{
+                flag=false;
             }
-            return false;
         }
     })
-    return true;
+    return flag;
 }
