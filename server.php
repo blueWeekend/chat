@@ -41,6 +41,8 @@ class MyServer{
                     $temp_msg=$val['values'][$val['resultType']];
                     if($val['resultType']=='url'){
                         $temp_msg='<a target="_blank" href="'.$temp_msg.'">'.$temp_msg.'</a>';
+                    }else if($val['resultType']=='image'){
+                        $temp_msg='<img src="'.$temp_msg.'">';
                     }
                     $msg='智能机器人 '.date('Y-m-d H:i:s')."<br>{$temp_msg}";
                     //聊天记录
